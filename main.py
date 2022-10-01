@@ -96,7 +96,7 @@ def reconstruct_path(came_from,current,draw):
     current.make_path()
     draw()
 
-def algorithm(draw,grid,start,end):
+def a_star(draw,grid,start,end):
     count=0
     open_set=PriorityQueue()
     open_set.put((0,count,start))
@@ -136,7 +136,109 @@ def algorithm(draw,grid,start,end):
         if current != start:
             current.make_close()
     return False
+def dijkstra(draw, grid, start, end):
+	open_set = PriorityQueue()
+	open_set.put((0, start))
+	came_from = {}
+	distance = {spot: float("inf") for row in grid for spot in row}
+	distance[start] = 0
+	open_set_hash = {start}
+	while not open_set.empty():
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
 
+		current = open_set.get()[1]
+		open_set_hash.remove(current)
+
+		if current == end:
+			reconstruct_path(came_from, end, draw)
+			end.make_end()
+			return True
+
+		for neighbor in current.neighbors:
+			temp_distance = distance[current] + h(neighbor.get_pos() , current.get_pos())
+			if temp_distance < distance[neighbor]:
+				came_from[neighbor] = current
+				distance[neighbor] = temp_distance
+				if neighbor not in open_set_hash:
+					open_set.put((distance[neighbor], neighbor))
+					open_set_hash.add(neighbor)
+					neighbor.make_open()
+
+		draw()
+
+		if current != start:
+			current.make_close()
+
+	return False
+
+def BFS(draw, grid, start, end):
+	count = 0
+	open_set = PriorityQueue()
+	open_set.put((count, start))
+	came_from = {}
+	visited = {spot: bool(False) for row in grid for spot in row}
+	visited[start] = True
+	while not open_set.empty():
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+
+		current = open_set.get()[1]
+		if current == end:
+			reconstruct_path(came_from, end, draw)
+			end.make_end()
+			return True
+
+		for neighbor in current.neighbors:
+			if visited[neighbor] == False:
+				came_from[neighbor] = current
+				count+=1
+				open_set.put((count, neighbor))
+				visited[neighbor] = True
+				neighbor.make_open()
+
+		draw()
+
+		if current != start:
+			current.make_close()
+	return False
+def DFS(draw, grid, start, end):
+	stack = []
+	came_from = {}
+	visited = {spot: bool(False) for row in grid for spot in row}
+	current = start
+	visited[current] = True
+	while current != None:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+		dfs_flag = False
+		if current == end:
+			reconstruct_path(came_from, end, draw)
+			end.make_end()
+			return True
+		for neighbor in current.neighbors:
+			if visited[neighbor] == False:
+				stack.append(current)
+				came_from[neighbor] = current
+				current = neighbor
+				visited[current] = True
+				neighbor.make_open()
+				dfs_flag = True
+				break
+
+		if dfs_flag == False:
+			if len(stack) == 0:
+				current = None
+			else:
+				current = stack[-1]
+				stack.pop()
+		if current != start:
+			current.make_close()
+		draw()
+	return False
 def make_grid(rows,width):
     grid=[]
     gap=width//rows
@@ -186,9 +288,6 @@ def main(win,width):
             if event.type==pygame.QUIT:
                 run=False
 
-            elif started:
-                continue
-        
             elif pygame.mouse.get_pressed()[0]:
                 pos=pygame.mouse.get_pos()
                 row,col=get_clicked_pos(pos,ROWS,width)
@@ -218,12 +317,32 @@ def main(win,width):
                     end=None
 
             if event.type==pygame.KEYDOWN:
-                if event.key==pygame.K_SPACE and not started:   
+                if event.key==pygame.K_a and start and end:
                     for row in grid:
                         for node in row:
                             node.update_neighbors(grid)
                     
-                    algorithm(lambda: draw(win,grid,ROWS,width),grid,start,end)
+                    a_star(lambda: draw(win,grid,ROWS,width),grid,start,end)
+                elif event.key==pygame.K_b and start and end:
+                    for row in grid:
+                        for node in row:
+                            node.update_neighbors(grid)
+                    BFS(lambda: draw(win,grid,ROWS,width),grid,start,end)
+                elif event.key==pygame.K_c and start and end:
+                    for row in grid:
+                        for node in row:
+                            node.update_neighbors(grid)
+                    DFS(lambda: draw(win,grid,ROWS,width),grid,start,end)
+                elif event.key==pygame.K_d and start and end:
+                    for row in grid:
+                        for node in row:
+                            node.update_neighbors(grid)
+                    dijkstra(lambda: draw(win,grid,ROWS,width),grid,start,end)
+
+                elif event.key==pygame.K_ESCAPE:
+                    start=None
+                    end=None
+                    grid=make_grid(ROWS,width)
                 
     pygame.quit()
 
