@@ -1,12 +1,12 @@
 # A-Star-visualiser
 
-# download python from python.org
-# follow https://pip.pypa.io/en/stable/installing/ for installing pip
-# download pygame using command : pip install pygame
+### download python from python.org
+follow https://pip.pypa.io/en/stable/installing/ for installing pip
+download pygame using command : pip install pygame
 
-# download main.py file 
-# go to the directory where you stored main.py using cd command in cmd
-# run the code using : python main.py
+### download main.py file 
+go to the directory where you stored main.py using cd command in cmd
+run the code using : python main.py
 
 # Select start position firstly, then select end position both using left click on mouse.
 # You can also place barrier using left mouse clicks
