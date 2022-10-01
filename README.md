@@ -13,4 +13,4 @@
 # if you want to change start or end position, click on the right mouse button and then click on the position using left mouse button wherever you want it to be
 # You can also remove a barrier by clicking right mouse button on the barrier.
 
-# Click on the space-bar for running the visualiser.
+### Click on the space-bar for running the visualiser.
