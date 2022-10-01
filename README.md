@@ -1,4 +1,4 @@
-# A-Star-visualiser
+# Path Finding Algorithm Visualiser
 
 download python from python.org
 follow https://pip.pypa.io/en/stable/installing/ for installing pip
